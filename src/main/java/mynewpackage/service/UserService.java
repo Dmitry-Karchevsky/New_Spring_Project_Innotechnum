@@ -5,41 +5,45 @@ import mynewpackage.domain.User;
 import mynewpackage.repository.RoleRepository;
 import mynewpackage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-/*import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;*/
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-//public class UserService implements UserDetailsService {
-public class UserService {
-    @PersistenceContext
-    private EntityManager em;
+public class UserService implements UserDetailsService {
+
     @Autowired
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
-    //@Autowired
-    //BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    /*@Override
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
+        final User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        return user;
-    }*/
+        /*Боже, как хорошо, что есть индусы на ютубе
+        https://www.youtube.com/watch?v=AQg0OTPLzfU
+
+        *Не проходил аутентификацию при тестировании (Postman)
+        */
+        final List<Role> authoritiesForSpring = user.getRoles().stream().collect(Collectors.toList());
+
+        System.out.println(authoritiesForSpring);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authoritiesForSpring);
+    }
 
     public mynewpackage.domain.User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
@@ -60,18 +64,17 @@ public class UserService {
         user.setActive(true);
         user.setRegdate(LocalDate.now());
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setPassword(user.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        //user.setPassword(user.getPassword());
         userRepository.save(user);
         return user;
     }
 
     public User updateUser(Long id, User user) {
         user.setId(id);
-        //User oldUser = userRepository.deleteUserById(id);
         if (userRepository.deleteUserById(id)) {
-            //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setPassword(user.getPassword());
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            //user.setPassword(user.getPassword());
             userRepository.save(user);
             return user;
         }
@@ -84,10 +87,5 @@ public class UserService {
             return true;
         }
         return false;
-    }
-
-    public List<User> usergtList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
     }
 }

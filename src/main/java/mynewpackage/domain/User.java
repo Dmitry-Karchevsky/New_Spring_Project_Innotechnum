@@ -2,8 +2,8 @@ package mynewpackage.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sun.istack.NotNull;
-/*import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;*/
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -13,14 +13,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "usr")
-//public class User implements UserDetails {
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @JsonView(Views.RequiredField.class)
     private Long id;
 
-    @NotNull
+    @NotNull//не работает
     @Size(min=3, message = "Не меньше 3 знаков")
     @JsonView(Views.RequiredField.class)
     private String username;
@@ -64,22 +63,22 @@ public class User {
     public User() {
     }
 
-    /*@Override
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
-    }*/
+    }
 
-    //@Override
+    @Override
     public String getPassword() {
         return password;
     }
 
-    //@Override
+    @Override
     public String getUsername() {
         return username;
     }
 
-    /*@Override
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -97,7 +96,7 @@ public class User {
     @Override
     public boolean isEnabled() {
         return isActive();
-    }*/
+    }
 
     public Long getId() {
         return id;
