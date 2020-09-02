@@ -1,6 +1,7 @@
 package mynewpackage.service;
 
 import mynewpackage.domain.Role;
+import mynewpackage.domain.Test;
 import mynewpackage.domain.User;
 import mynewpackage.repository.RoleRepository;
 import mynewpackage.repository.UserRepository;
@@ -41,7 +42,6 @@ public class UserService implements UserDetailsService {
         */
         final List<Role> authoritiesForSpring = user.getRoles().stream().collect(Collectors.toList());
 
-        System.out.println(authoritiesForSpring);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authoritiesForSpring);
     }
 
@@ -72,7 +72,11 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(Long id, User user) {
         user.setId(id);
-        if (userRepository.deleteUserById(id)) {
+        Optional<User> userFromDb = userRepository.findById(id);
+        if (userFromDb.isPresent()) {
+            user.setActive(userFromDb.get().isActive());
+            user.setRegdate(userFromDb.get().getRegdate());
+            user.setRoles(userFromDb.get().getRoles());
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             //user.setPassword(user.getPassword());
             userRepository.save(user);

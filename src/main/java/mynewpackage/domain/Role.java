@@ -1,5 +1,6 @@
 package mynewpackage.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -9,9 +10,14 @@ import java.util.Set;
 @Table(name = "t_role")
 public class Role implements GrantedAuthority {
     @Id
+    @JsonView(Views.NotRequiredField.class)
     private Long id;
+
+    @JsonView(Views.RequiredField.class)
     private String name;
+
     @Transient
+    @JsonView(Views.NotRequiredField.class)
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
     public Role() {

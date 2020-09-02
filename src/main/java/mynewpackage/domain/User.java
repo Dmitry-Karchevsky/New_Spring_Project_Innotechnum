@@ -1,14 +1,16 @@
 package mynewpackage.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,7 +26,7 @@ public class User implements UserDetails {
     @JsonView(Views.RequiredField.class)
     private String username;
 
-    //@NotNull
+    @NotBlank
     @JsonView(Views.RequiredField.class)
     private String firstName;
 
@@ -43,7 +45,7 @@ public class User implements UserDetails {
     @JsonView(Views.RequiredField.class)
     private String organization;
 
-    @NotNull
+    @NotBlank
     @Size(min=3, message = "Не меньше 3 знаков")
     @JsonView(Views.RequiredField.class)
     private String password;
@@ -176,5 +178,18 @@ public class User implements UserDetails {
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
