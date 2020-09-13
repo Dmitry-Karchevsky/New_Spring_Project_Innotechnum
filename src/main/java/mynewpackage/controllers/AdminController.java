@@ -6,6 +6,9 @@ import mynewpackage.domain.Views;
 import mynewpackage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +50,7 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        userService.deleteUser2(id);
 
         return ResponseEntity.ok().build();
     }

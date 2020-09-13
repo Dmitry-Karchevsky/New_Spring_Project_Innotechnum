@@ -32,7 +32,7 @@ public class TestService {
         Optional<Test> testFromDb = testRepository.findById(idTest);
         if (allTestsWithAuthor(idAuthor).contains(testFromDb.get()))
             return testFromDb.get();
-        return null;
+        return new Test();
     }
 
     public List<Test> allTestsWithAuthor(Long idAuthor) {

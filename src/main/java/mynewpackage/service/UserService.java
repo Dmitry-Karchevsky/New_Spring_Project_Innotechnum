@@ -56,8 +56,7 @@ public class UserService implements UserDetailsService {
 
     public User saveUser(User user) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDB != null) {
+        if (userFromDB != null || !user.getPassword().equals(user.getPasswordConfirm())) {
             return null;
         }
 
@@ -88,6 +87,16 @@ public class UserService implements UserDetailsService {
     public boolean deleteUser(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteUser2(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            user.get().setActive(false);
+            userRepository.save(user.get());
             return true;
         }
         return false;

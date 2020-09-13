@@ -20,6 +20,7 @@ public class Role implements GrantedAuthority {
     @JsonView(Views.NotRequiredField.class)
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
     public Role() {
     }
 

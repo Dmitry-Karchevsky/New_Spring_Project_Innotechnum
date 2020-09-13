@@ -5,8 +5,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -21,31 +19,31 @@ public class User implements UserDetails {
     @JsonView(Views.RequiredField.class)
     private Long id;
 
-    @NotNull//не работает
+    @Column(nullable = false, length = 25)
     @Size(min=3, message = "Не меньше 3 знаков")
     @JsonView(Views.RequiredField.class)
     private String username;
 
-    @NotBlank
+    @Column(nullable = false, length = 30)
     @JsonView(Views.RequiredField.class)
     private String firstName;
 
-    //@NotNull
+    @Column(nullable = false, length = 30)
     @JsonView(Views.RequiredField.class)
     private String lastName;
 
-    //@NotNull
+    @Column(nullable = false, length = 60)
     @JsonView(Views.RequiredField.class)
     private String email;
 
-    //@NotNull
+    @Column(nullable = false)
     @JsonView(Views.RequiredField.class)
     private LocalDate regdate;
 
     @JsonView(Views.RequiredField.class)
     private String organization;
 
-    @NotBlank
+    @Column(nullable = false, length = 100)
     @Size(min=3, message = "Не меньше 3 знаков")
     @JsonView(Views.RequiredField.class)
     private String password;
@@ -54,13 +52,18 @@ public class User implements UserDetails {
     @JsonView(Views.NotRequiredField.class)
     private String passwordConfirm;
 
-    //@NotNull
+    @Column(nullable = false)
     @JsonView(Views.NotRequiredField.class)
     private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonView(Views.RequiredField.class)
     private Set<Role> roles;
+
+    @Transient
+    @JsonView(Views.NotRequiredField.class)
+    @ManyToMany(mappedBy = "answers")
+    private Set<Answer> answers;
 
     public User() {
     }

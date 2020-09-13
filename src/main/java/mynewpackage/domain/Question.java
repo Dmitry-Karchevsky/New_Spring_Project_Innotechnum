@@ -3,10 +3,12 @@ package mynewpackage.domain;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-public class Test {
+public class Question {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @JsonView(Views.RequiredField.class)
@@ -14,18 +16,18 @@ public class Test {
 
     @Column(nullable = false)
     @JsonView(Views.RequiredField.class)
-    private String name;
+    private String questionString;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "test_id")
+    private Test test;
+
+    @Transient
+    @OneToMany(fetch = FetchType.EAGER)
     @JsonView(Views.RequiredField.class)
-    private User author;
+    private List<Answer> answers;
 
-    public Test() {}
-
-    public Test(String name, User author) {
-        this.name = name;
-        this.author = author;
+    public Question() {
     }
 
     public Long getId() {
@@ -36,32 +38,36 @@ public class Test {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getQuestionString() {
+        return questionString;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setQuestionString(String questionString) {
+        this.questionString = questionString;
     }
 
-    public String getAuthorName() {
-        return author != null ? author.getUsername() : "<none>";
+    public Test getTest() {
+        return test;
     }
 
-    public User getAuthor() {
-        return author;
+    public void setTest(Test test) {
+        this.test = test;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Test test = (Test) o;
-        return Objects.equals(id, test.id);
+        Question question = (Question) o;
+        return Objects.equals(id, question.id);
     }
 
     @Override
