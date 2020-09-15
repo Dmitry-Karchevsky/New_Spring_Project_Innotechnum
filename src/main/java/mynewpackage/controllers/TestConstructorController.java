@@ -39,4 +39,13 @@ public class TestConstructorController {
 
         return ResponseEntity.ok(createdQuestion);
     }
+
+    @PutMapping("/{id_test}/{id_question}")
+    @JsonView(Views.RequiredField.class)
+    public ResponseEntity<Question> updateQuestion(@PathVariable("id_test") Long idTest,
+                                                   @PathVariable("id_question") Long idQuestion,
+                                                   @RequestBody Question questionWithAnswers) {
+        Question updateQuestion = questionService.updateQuestion(idQuestion, questionWithAnswers);
+        return ResponseEntity.ok(updateQuestion);
+    }
 }

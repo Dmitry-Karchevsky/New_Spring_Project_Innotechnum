@@ -62,4 +62,12 @@ public class Answer {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 }

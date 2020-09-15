@@ -1,9 +1,12 @@
 package mynewpackage.service;
 
+import mynewpackage.domain.Answer;
 import mynewpackage.domain.Question;
 import mynewpackage.domain.Test;
+import mynewpackage.domain.User;
 import mynewpackage.repository.QuestionRepository;
 import mynewpackage.repository.TestRepository;
+import mynewpackage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +25,26 @@ public class QuestionService {
     @Autowired
     private AnswerService answerService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<Question> allQuestionsInTest(Long idTest) {
         Optional<Test> testFromDb = testRepository.findById(idTest);
         List<Question> questionList = testFromDb.map(test -> questionRepository.findAllByTest(test)).orElse(null);
-        for (Question question : questionList){
-            question.setAnswers(answerService.allAnswersInQuestion(question.getId()));
-        }
         return questionList;
+    }
+
+    public Question getQuestion(Long idTest, Long questionId) {
+        Optional<Test> testFromDb = testRepository.findById(idTest);
+        Optional<Question> questionFromDb = questionRepository.findById(questionId);
+        if (!testFromDb.equals(questionFromDb.get().getTest()))
+            return null;
+        return questionFromDb.get();
     }
 
     public Question saveQuestion(Question question, Long idTest) {
         question.setTest(testRepository.findById(idTest).get());
         questionRepository.save(question);
-
-        answerService.saveAnswerList(question.getAnswers(), question);
 
         return question;
     }
@@ -46,5 +55,22 @@ public class QuestionService {
             questionRepository.save(question);
         }
         return questionList;
+    }
+
+    public Question updateQuestion(Long idQuestion, Question question){
+        question.setId(idQuestion);
+        Optional<Question> questionFromDb = questionRepository.findById(idQuestion);
+        if (questionFromDb.isPresent()){
+            questionRepository.save(question);
+            return question;
+        }
+        return null;
+    }
+
+    public Question writeAnswers(Long idQuestion, Question question, String userName){
+        User student = userRepository.findByUsername(userName);
+        Optional<Question> questionFromDb = questionRepository.findById(idQuestion);
+
+
     }
 }

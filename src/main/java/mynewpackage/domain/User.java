@@ -19,7 +19,7 @@ public class User implements UserDetails {
     @JsonView(Views.RequiredField.class)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 25, unique = true)
     @Size(min=3, message = "Не меньше 3 знаков")
     @JsonView(Views.RequiredField.class)
     private String username;
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @JsonView(Views.RequiredField.class)
     private String lastName;
 
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 60, unique = true)
     @JsonView(Views.RequiredField.class)
     private String email;
 

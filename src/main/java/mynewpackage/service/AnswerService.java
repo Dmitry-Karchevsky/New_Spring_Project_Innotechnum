@@ -37,4 +37,16 @@ public class AnswerService {
         answerRepository.save(answer);
         return answer;
     }
+
+    public Answer updateAnswer(Long idAnswer, Answer answer) {
+        answer.setId(idAnswer);
+        Optional<Answer> answerFromDb = answerRepository.findById(idAnswer);
+        if (answerFromDb.isPresent()){
+            answer.setQuestion(answerFromDb.get().getQuestion());
+            answer.setUsers(answerFromDb.get().getUsers());
+            answerRepository.save(answer);
+            return answer;
+        }
+        return null;
+    }
 }

@@ -18,14 +18,13 @@ public class Question {
     @JsonView(Views.RequiredField.class)
     private String questionString;
 
+    @Column(nullable = false)
+    @JsonView(Views.RequiredField.class)
+    private String rightAnswer;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id")
     private Test test;
-
-    @Transient
-    @OneToMany(fetch = FetchType.EAGER)
-    @JsonView(Views.RequiredField.class)
-    private List<Answer> answers;
 
     public Question() {
     }
@@ -52,14 +51,6 @@ public class Question {
 
     public void setTest(Test test) {
         this.test = test;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
     }
 
     @Override
