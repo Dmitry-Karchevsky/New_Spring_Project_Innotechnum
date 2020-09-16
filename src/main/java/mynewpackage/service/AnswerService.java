@@ -8,8 +8,10 @@ import mynewpackage.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AnswerService {
@@ -19,6 +21,9 @@ public class AnswerService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private TestStudentMarkService testStudentMarkService;
 
     public List<Answer> allAnswersInQuestion(Long idQuestion) {
         Optional<Question> questionFromDb = questionRepository.findById(idQuestion);
@@ -37,11 +42,23 @@ public class AnswerService {
         answer.setQuestion(question);
         for (Answer answerFromList : allAnswersInQuestion(question.getId())){
             if (answer.getAnswerString().equals(answerFromList.getAnswerString())) {
-                answer.setId(answerFromList.getId());
-                answer.getUsers().add(student);
+
+                //изменение количества решенных в тесте вопросов и учет правильности
+                if (answer.isTrue() == answerFromList.isTrue())
+                    testStudentMarkService.updateMarkPlusOneAnswer(question.getTest(), student);
+
+                if (answerFromList.getUsers() == null) {
+                    answerFromList.setUsers(new HashSet<>() {{
+                        add(student);
+                    }});
+                } else {
+                    Set<User> tempSet = answerFromList.getUsers();
+                    tempSet.add(student);
+                    answerFromList.setUsers(tempSet);
+                }
+                answerRepository.save(answerFromList);
             }
         }
-        answerRepository.save(answer);
         return answer;
     }
 

@@ -5,6 +5,7 @@ import mynewpackage.domain.Question;
 import mynewpackage.domain.User;
 import mynewpackage.domain.Views;
 import mynewpackage.service.QuestionService;
+import mynewpackage.service.TestStudentMarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,9 @@ public class PassingTestController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private TestStudentMarkService testStudentMarkService;
 
     @GetMapping("/{id_test}")
     @JsonView(Views.RequiredField.class)
@@ -43,6 +47,10 @@ public class PassingTestController {
     ){
         UserDetails userDetails = (UserDetails) org.springframework.security.core.context.SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
+
+        if (testStudentMarkService.getTestStudentMark(idTest, userDetails.getUsername()) == null)
+            testStudentMarkService.startTest(idTest, userDetails.getUsername());
+
         Question questionFromDb = questionService.writeAnswers(questionId, questionWithAnswers, userDetails.getUsername());
 
         return ResponseEntity.ok(questionFromDb);

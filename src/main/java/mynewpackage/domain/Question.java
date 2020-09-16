@@ -18,10 +18,6 @@ public class Question {
     @JsonView(Views.RequiredField.class)
     private String questionString;
 
-    @Column(nullable = false)
-    @JsonView(Views.RequiredField.class)
-    private String rightAnswer;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id")
     private Test test;
@@ -56,14 +52,6 @@ public class Question {
 
     public void setTest(Test test) {
         this.test = test;
-    }
-
-    public String getRightAnswer() {
-        return rightAnswer;
-    }
-
-    public void setRightAnswer(String rightAnswer) {
-        this.rightAnswer = rightAnswer;
     }
 
     public List<Answer> getAnswers() {

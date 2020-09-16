@@ -17,11 +17,23 @@ public class TestStudentMark {
     @OneToOne
     private Test test;
 
+    private Integer countOfQuestions;
+
+    private Integer countOfCorrectAnswers;
+
     private Double mark;
 
-    private boolean status;
+    private boolean isFinish;
 
     public TestStudentMark() {
+    }
+
+    public TestStudentMark(User user, Test test, Integer countOfQuestions, boolean isFinish) {
+        this.user = user;
+        this.test = test;
+        this.countOfQuestions = countOfQuestions;
+        this.isFinish = isFinish;
+        countOfCorrectAnswers = 0;
     }
 
     public Long getId() {
@@ -56,11 +68,27 @@ public class TestStudentMark {
         this.mark = mark;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isFinish() {
+        return isFinish;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setIsFinish(boolean isFinish) {
+        this.isFinish = isFinish;
+    }
+
+    public Integer getCountOfQuestions() {
+        return countOfQuestions;
+    }
+
+    public void setCountOfQuestions(Integer countOfQuestions) {
+        this.countOfQuestions = countOfQuestions;
+    }
+
+    public Integer getCountOfCorrectAnswers() {
+        return countOfCorrectAnswers;
+    }
+
+    public void setCountOfCorrectAnswers(Integer countOfCorrectAnswers) {
+        this.countOfCorrectAnswers = countOfCorrectAnswers;
     }
 }
