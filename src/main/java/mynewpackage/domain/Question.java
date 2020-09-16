@@ -26,6 +26,11 @@ public class Question {
     @JoinColumn(name = "test_id")
     private Test test;
 
+    @Transient
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonView(Views.RequiredField.class)
+    private List<Answer> answers;
+
     public Question() {
     }
 
@@ -51,6 +56,22 @@ public class Question {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public String getRightAnswer() {
+        return rightAnswer;
+    }
+
+    public void setRightAnswer(String rightAnswer) {
+        this.rightAnswer = rightAnswer;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     @Override

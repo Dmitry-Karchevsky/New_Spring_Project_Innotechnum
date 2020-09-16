@@ -2,6 +2,7 @@ package mynewpackage.service;
 
 import mynewpackage.domain.Answer;
 import mynewpackage.domain.Question;
+import mynewpackage.domain.User;
 import mynewpackage.repository.AnswerRepository;
 import mynewpackage.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,14 @@ public class AnswerService {
         return true;
     }
 
-    public Answer saveAnswer(Answer answer, Long idQuestion) {
-        answer.setQuestion(questionRepository.findById(idQuestion).get());
+    public Answer saveAnswer(Answer answer, Question question, User student) {
+        answer.setQuestion(question);
+        for (Answer answerFromList : allAnswersInQuestion(question.getId())){
+            if (answer.getAnswerString().equals(answerFromList.getAnswerString())) {
+                answer.setId(answerFromList.getId());
+                answer.getUsers().add(student);
+            }
+        }
         answerRepository.save(answer);
         return answer;
     }
